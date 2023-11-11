@@ -1,1 +1,1 @@
-# magic_doc
+# Magic Doc
