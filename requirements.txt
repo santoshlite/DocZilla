@@ -1,0 +1,2 @@
+pynput==1.7.6
+PyGetWindow==0.0.9

@@ -3,9 +3,14 @@ import time
 from pynput import keyboard, mouse
 import pygetwindow as gw
 
-instructs = []
+instructs:list[str] = []
 
-def update_instructions(new_input):
+
+def update_readme(instructs: list[str]):
+
+    
+
+def update_instructions(new_input: str):
     if new_input == 'enter':
         # Directly add 'Type Enter' as a new instruction
         instructs.append("Type 'Enter'")
@@ -49,13 +54,15 @@ def on_press(key):
             update_instructions('backspace')
         elif key == keyboard.Key.enter:
             update_instructions('enter')
-    print(instructs)
+    update_readme(instructs)
 
 
 def on_click(x, y, button, pressed):
     if pressed:
-        instructs.append(f"Clicked at ({x}, {y})")
-    print(instructs)
+        ## Commented as those are very annoying and appear everytimg
+        ## We can use those for screenshots but not to show in the instructions (2B discussed)
+        ##instructs.append(f"Clicked at ({x}, {y})")
+        return
 
 def check_active_window():
     current_active_window = None
@@ -74,7 +81,8 @@ def check_active_window():
         time.sleep(1)
     print(instructs)
 
-# Set up and start the threads
+
+# Set up and start the threads that listen for events from the user
 keyboard_listener = keyboard.Listener(on_press=on_press)
 mouse_listener = mouse.Listener(on_click=on_click)
 window_thread = threading.Thread(target=check_active_window)
