@@ -1,5 +1,6 @@
 import threading
 import time
+import os
 from pynput import keyboard, mouse
 import pygetwindow as gw
 
@@ -8,6 +9,14 @@ instructs:list[str] = []
 
 def update_readme(instructs: list[str]):
 
+    os.makedirs('output', exist_ok=True)
+    readme_path = os.path.join('output', 'result.md')
+
+    with open(readme_path, 'w') as file:
+        for index, instruction in enumerate(instructs, start=1):
+            file.write(f"{index}. {instruction}\n")
+
+    print(f"Readme updated with {len(instructs)} instructions.")
     
 
 def update_instructions(new_input: str):
@@ -77,7 +86,7 @@ def check_active_window():
                     window_title = current_active_window.title
                 except AttributeError:
                     window_title = "Unknown Application"
-                instructs.append(f"Go to [{window_title}]")
+                instructs.append(f"Go to {window_title}")
         time.sleep(1)
     print(instructs)
 
