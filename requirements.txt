@@ -1,2 +1,3 @@
 pynput==1.7.6
 PyGetWindow==0.0.9
+Pillow==10.1.0
