@@ -1,42 +1,47 @@
 from PIL import ImageGrab, ImageDraw
+import pyautogui
 import os, time
 import pygetwindow as gw
 from pynput import keyboard
-import pyautogui
 
 INSTRUCTS : list = []
+WINDOWS : list = []
 README_PATH = "./output/result.md"
 
 def capture_screenshot(click_coords=None):
-    """Captures a screenshot and optionally highlights the click coordinates."""
+    """Captures a screenshot of the active window and optionally highlights the click coordinates."""
     os.makedirs('output/screenshots', exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     screenshot_file = f'screenshot_{timestamp}.png'
-    
-    # get the currently active window
+
+    # Get the currently active window
     active_window = gw.getActiveWindow()
+    geometry_window = gw.getWindowGeometry(active_window)
 
-    # take screenshot of the active window
     if active_window is not None:
-            screenshot = pyautogui.screenshot(region=(
-                active_window.left,
-                active_window.top,
-                active_window.width,
-                active_window.height
-            ))
+        # Ensure all values are integers
+        left, top, width, height = map(int, [
+            geometry_window[0],
+            geometry_window[1],
+            geometry_window[2],
+            geometry_window[3]
+        ])
 
+        screenshot = pyautogui.screenshot(region=(left, top, width, height))
 
-    if click_coords:
+        if click_coords:
             draw = ImageDraw.Draw(screenshot)
             # Adjust click coordinates relative to the active window
-            x, y = click_coords[0] - active_window.left, click_coords[1] - active_window.top
+            x, y = click_coords[0] - left, click_coords[1] - top
             radius = 30  # Radius of the circle
             # Draw a circle at the adjusted click coordinates
             draw.ellipse((x - radius, y - radius, x + radius, y + radius), outline="red", width=2)
 
-    screenshot.save(os.path.join('./output/screenshots', screenshot_file))
-    screenshot_relative_path = os.path.join('./screenshots', screenshot_file)
-    INSTRUCTS.append(f"![Screenshot]({screenshot_relative_path})\n\n")
+        screenshot.save(os.path.join('./output/screenshots', screenshot_file))
+        screenshot_relative_path = os.path.join('./screenshots', screenshot_file)
+        INSTRUCTS.append(f"![Screenshot]({screenshot_relative_path})\n\n")
+    else:
+        print("No active window found.")
     
 def update_readme(instructs: list[str]):
 
@@ -57,9 +62,7 @@ def update_instructions(new_input: str):
         INSTRUCTS.append("Type 'Enter'")
     elif INSTRUCTS and INSTRUCTS[-1] == "Type 'Enter'":
         # If the last instruction is 'Type Enter', replace it with the new input
-        if new_input == 'space':
-            INSTRUCTS[-1] = "Type ' '"
-        elif new_input != 'backspace':
+        if new_input != 'backspace':
             # Replace 'Type Enter' with the new instruction
             INSTRUCTS[-1] = f"Type '{new_input}'"
     elif INSTRUCTS and INSTRUCTS[-1].startswith("Type '"):
@@ -123,4 +126,3 @@ def check_active_window():
                     window_title = "Unknown Application"
                 INSTRUCTS.append(f"Go to {window_title}")
         time.sleep(1)
-    print(instructs)
