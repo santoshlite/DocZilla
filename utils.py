@@ -2,6 +2,7 @@ from PIL import ImageGrab, ImageDraw
 import os, time
 import pygetwindow as gw
 from pynput import keyboard
+import pyautogui
 
 INSTRUCTS : list = []
 README_PATH = "./output/result.md"
@@ -11,17 +12,30 @@ def capture_screenshot(click_coords=None):
     os.makedirs('output/screenshots', exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     screenshot_file = f'screenshot_{timestamp}.png'
-    screen = ImageGrab.grab()
+    
+    # get the currently active window
+    active_window = gw.getActiveWindow()
+
+    # take screenshot of the active window
+    if active_window is not None:
+            screenshot = pyautogui.screenshot(region=(
+                active_window.left,
+                active_window.top,
+                active_window.width,
+                active_window.height
+            ))
+
 
     if click_coords:
-        draw = ImageDraw.Draw(screen)
-        x, y = click_coords
-        radius = 30  # Radius of the circle
-        # Draw a circle at the click coordinates
-        draw.ellipse((x - radius, y - radius, x + radius, y + radius), outline="red", width=2)
+            draw = ImageDraw.Draw(screenshot)
+            # Adjust click coordinates relative to the active window
+            x, y = click_coords[0] - active_window.left, click_coords[1] - active_window.top
+            radius = 30  # Radius of the circle
+            # Draw a circle at the adjusted click coordinates
+            draw.ellipse((x - radius, y - radius, x + radius, y + radius), outline="red", width=2)
 
-    screen.save(os.path.join('./output/screenshots', screenshot_file))
-    screenshot_relative_path = os.path.join('./screenshots', f'screenshot_{timestamp}.png')
+    screenshot.save(os.path.join('./output/screenshots', screenshot_file))
+    screenshot_relative_path = os.path.join('./screenshots', screenshot_file)
     INSTRUCTS.append(f"![Screenshot]({screenshot_relative_path})\n\n")
     
 def update_readme(instructs: list[str]):
@@ -35,6 +49,8 @@ def update_readme(instructs: list[str]):
 
     print(f"Readme updated with {len(instructs)} instructions.")
 
+
+# todo: maintain a buffer for text typed
 def update_instructions(new_input: str):
     if new_input == 'enter':
         # Directly add 'Type Enter' as a new instruction

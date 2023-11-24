@@ -4,6 +4,11 @@ from utils import *
 
 
 def main():    
+
+    # Clear screenshots when starting a new recording
+    for filename in os.listdir('output/screenshots'):
+        os.remove(f'output/screenshots/{filename}')
+
     # Set up and start the threads that listen for events from the user
     keyboard_listener = keyboard.Listener(on_press=on_press)
     mouse_listener = mouse.Listener(on_click=on_click)
