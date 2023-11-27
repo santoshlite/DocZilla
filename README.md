@@ -1,4 +1,4 @@
-# Zenvelop
+# Grimoire
 
 - `backend`: contains Python code to generate code
     - `pip install -r requirements.txt`
