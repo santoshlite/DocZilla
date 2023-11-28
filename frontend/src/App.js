@@ -1,15 +1,15 @@
-import logo from './logo.svg';
 import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagicWandSparkles } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from 'react';
+import SearchBar from './Navbar';
+import Navbar from './Navbar';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-         <code>BLAZINGLY FAST, Inc.</code>
-        </p>
-      </header>
+        <Navbar />
+        <button><FontAwesomeIcon icon={faMagicWandSparkles} /> New Grimoire</button>
     </div>
   );
 }
