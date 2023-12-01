@@ -1,4 +1,4 @@
-from PIL import ImageGrab, ImageDraw
+from PIL import ImageDraw
 import pyautogui
 import os, time
 import pygetwindow as gw
@@ -6,7 +6,7 @@ from pynput import keyboard
 
 INSTRUCTS : list = []
 WINDOWS : list = []
-README_PATH = "./output/result.md"
+README_PATH : str = "./output/result.md"
 
 def capture_screenshot(click_coords=None):
     """Captures a screenshot of the active window and optionally highlights the click coordinates."""
