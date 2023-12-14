@@ -1,6 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
-  font-family: 'Alliance';
-  src: url('assets/Alliance No.2 Regular.otf') format('opentype');
+  font-family: 'Alliance 2 bold';
+  src: url('assets/font/alliance_2_bold.otf') format('opentype');
 }
 
 
@@ -19,7 +23,7 @@ code {
 }
 
 h3 {
-  font-family: 'Alliance';
+  font-family: 'Alliance 2 bold';
   font-size: 2rem;
   font-weight: 300;
   color: #000000;
