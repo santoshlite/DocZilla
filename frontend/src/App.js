@@ -1,23 +1,32 @@
-import './App.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagicWandSparkles } from '@fortawesome/free-solid-svg-icons';
-import React from 'react';
-import Navbar from './Navbar';
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// Import your page components
+import SavedGrimoires from "./components/SavedGrimoires";
+import NewGrimoire from "./components/NewGrimoire";
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="flex">
-      <div className="mt-10">
-        <Navbar />
-
-        <button>
-           <FontAwesomeIcon icon={faMagicWandSparkles} /> New Grimoire
-        </button>
-
-    </div>
-    </div>  
+    <Router>
+      <div className="flex h-screen bg-slate-200">
+        <Navbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <div className="flex-1 p-4">
+          <Routes>
+            <Route path="/saved-grimoires" element={<SavedGrimoires />} />
+            <Route path="/new-grimoire" element={<NewGrimoire />} />
+            {/* Add more routes as needed */}
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
-
 
 export default App;
