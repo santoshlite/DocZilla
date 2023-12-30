@@ -3,10 +3,30 @@ import pyautogui
 import os, time
 import pygetwindow as gw
 from pynput import keyboard
+import re
+import glob
 
 INSTRUCTS : list = []
 WINDOWS : list = []
-README_PATH : str = "./output/result.md"
+
+def get_next_filename():
+    pattern = 'output/result_*.md'
+    files = glob.glob(pattern)
+    max_num = 0
+
+    for file in files:
+        match = re.search(r'result_(\d+).md', file)
+        if match:
+            num = int(match.group(1))
+            if num > max_num:
+                max_num = num
+
+    next_num = max_num + 1
+    return f'output/result_{next_num}.md'
+
+README_PATH : str = get_next_filename()
+
+
 
 def capture_screenshot(click_coords=None):
     """Captures a screenshot of the active window and optionally highlights the click coordinates."""
@@ -44,16 +64,11 @@ def capture_screenshot(click_coords=None):
         print("No active window found.")
     
 def update_readme(instructs: list[str]):
-
-    os.makedirs('output', exist_ok=True)
-    readme_path = os.path.join('output', 'result.md')
-
-    with open(readme_path, 'w') as file:
+    with open(README_PATH, 'w') as file:
         for index, instruction in enumerate(instructs, start=1):
             file.write(f"{index}. {instruction}\n")
 
-    print(f"Readme updated with {len(instructs)} instructions.")
-
+    print(f"Readme updated: {README_PATH}")
 
 # todo: maintain a buffer for text typed
 def update_instructions(new_input: str):
