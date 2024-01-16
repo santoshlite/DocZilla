@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Import your page components
 import SavedGrimoires from "./components/SavedGrimoires";
 import NewGrimoire from "./components/NewGrimoire";
+import GrimoireFullView from "./components/GrimoireFullView";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,7 +22,7 @@ function App() {
           <Routes>
             <Route path="/saved-grimoires" element={<SavedGrimoires />} />
             <Route path="/new-grimoire" element={<NewGrimoire />} />
-            {/* Add more routes as needed */}
+            <Route path="/grimoire/:title" element={<GrimoireFullView />} />
           </Routes>
         </div>
       </div>

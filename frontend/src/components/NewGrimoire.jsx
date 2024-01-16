@@ -1,7 +1,11 @@
 import React from "react";
 
 function NewGrimoire() {
-  return <div>NewGrimoire</div>;
+  return (
+    <div>
+      <button>make a new grimoire</button>
+    </div>
+  );
 }
 
 export default NewGrimoire;
