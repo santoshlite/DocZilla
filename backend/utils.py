@@ -1,16 +1,23 @@
-from PIL import ImageDraw
+from pathlib import Path
 import pyautogui
 import os, time
 import pygetwindow as gw
 from pynput import keyboard
 import re
 import glob
+from PIL import ImageDraw
 
 INSTRUCTS : list = []
 WINDOWS : list = []
 
+# Define the shared directory
+def get_shared_directory():
+    return Path.home() / "Documents" / "GrimoireOutput"
+
+# Modify get_next_filename to use the shared directory
 def get_next_filename():
-    pattern = 'output/result_*.md'
+    shared_dir = get_shared_directory()
+    pattern = str(shared_dir / 'result_*.md')
     files = glob.glob(pattern)
     max_num = 0
 
@@ -22,18 +29,17 @@ def get_next_filename():
                 max_num = num
 
     next_num = max_num + 1
-    return f'output/result_{next_num}.md'
+    return str(shared_dir / f'result_{next_num}.md')
 
 README_PATH : str = get_next_filename()
 
-
-
 def capture_screenshot(click_coords=None):
-    """Captures a screenshot of the active window and optionally highlights the click coordinates."""
-    os.makedirs('output/screenshots', exist_ok=True)
+    shared_dir = get_shared_directory()
+    screenshots_dir = shared_dir / "screenshots"
+    os.makedirs(screenshots_dir, exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     screenshot_file = f'screenshot_{timestamp}.png'
-
+    
     # Get the currently active window
     active_window = gw.getActiveWindow()
     geometry_window = gw.getWindowGeometry(active_window)
@@ -46,9 +52,7 @@ def capture_screenshot(click_coords=None):
             geometry_window[2],
             geometry_window[3]
         ])
-
         screenshot = pyautogui.screenshot(region=(left, top, width, height))
-
         if click_coords:
             draw = ImageDraw.Draw(screenshot)
             # Adjust click coordinates relative to the active window
@@ -56,9 +60,8 @@ def capture_screenshot(click_coords=None):
             radius = 30  # Radius of the circle
             # Draw a circle at the adjusted click coordinates
             draw.ellipse((x - radius, y - radius, x + radius, y + radius), outline="red", width=2)
-
-        screenshot.save(os.path.join('./output/screenshots', screenshot_file))
-        screenshot_relative_path = os.path.join('./screenshots', screenshot_file)
+        screenshot.save(screenshots_dir / screenshot_file)
+        screenshot_relative_path = str(Path('./screenshots') / screenshot_file)
         INSTRUCTS.append(f"![Screenshot]({screenshot_relative_path})\n\n")
     else:
         print("No active window found.")
